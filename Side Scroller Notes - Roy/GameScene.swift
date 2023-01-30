@@ -32,10 +32,11 @@ class GameScene: SKScene {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        var speed = 0
+        var speed = 0.0
         for touch in touches {
-            speed = CGFloat(touch.position.x as! Int) - self.childNode(withName: "guy")?.position.x as! Int
+            speed = (touch.location(in: self).x - self.childNode(withName: "guy")!.position.x) as! CGFloat
         }
-        self.childNode(withName: "guy")?.physicsBody?.velocity = CGVector(dx: speed, dy: self.childNode(withName: "guy")?.physicsBody?.velocity.dy)
+        var yCurrentVector = self.childNode(withName: "guy")?.physicsBody?.velocity.dy
+        self.childNode(withName: "guy")?.physicsBody?.velocity = CGVector(dx: speed, dy: yCurrentVector!)
     }
 }
