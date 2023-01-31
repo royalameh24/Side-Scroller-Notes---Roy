@@ -8,13 +8,14 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate{
     private var character : SKSpriteNode!
     private var ground : SKSpriteNode!
     let cam = SKCameraNode()
     let speedFactor = 1
     
     override func didMove(to view: SKView) {
+        physicsWorld.contactDelegate = self
         //sets orientation of info-p list
         let value = UIInterfaceOrientation.landscapeLeft.rawValue
         UIDevice.current.setValue(value, forKey: "orientation")
@@ -38,5 +39,21 @@ class GameScene: SKScene {
         }
         var yCurrentVector = self.childNode(withName: "guy")?.physicsBody?.velocity.dy
         self.childNode(withName: "guy")?.physicsBody?.velocity = CGVector(dx: speed, dy: yCurrentVector!)
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        var guy : SKSpriteNode!
+        var coin : SKSpriteNode!
+        if contact.bodyA.categoryBitMask == 1 && contact.bodyB.categoryBitMask == 2 {
+            guy = contact.bodyA.node as? SKSpriteNode
+            coin = contact.bodyB.node as? SKSpriteNode
+        }
+        else if contact.bodyA.categoryBitMask == 2 && contact.bodyB.categoryBitMask == 1 {
+            coin = contact.bodyA.node as? SKSpriteNode
+            guy = contact.bodyB.node as? SKSpriteNode
+        }
+        if coin != nil {
+            coin.removeFromParent()
+        }
     }
 }
